@@ -677,3 +677,11 @@ DELETE FROM customers WHERE email = 'test@example.com';
 ## Результаты
 
 [Дамп SQL](dump.sql) · [Лог действий](my_actions.log)
+
+![Определение представления customer_summary](screenshots/05-customer-summary-definition.png)
+
+![План выполнения запроса к customer_summary](screenshots/06-explain-customer-summary.png)
+
+![Список представлений и выборка из moscow_customers](screenshots/07-list-views-moscow-customers.png)
+
+![Сводка клиентов по количеству заказов](screenshots/08-customer-summary-order-count.png)
