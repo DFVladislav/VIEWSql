@@ -1,0 +1,84 @@
+2026-11-12T07:24:42.521473Z	   39 Query	USE sql_practice
+2026-11-12T07:24:42.521874Z	   39 Query	UPDATE customers SET city = CONVERT(0xD09AD0B0D0B7D0B0D0BDD18C USING utf8mb4) WHERE id = 4
+2026-11-12T07:24:42.549980Z	   39 Query	UPDATE orders SET status = 'new' WHERE id = 3
+2026-11-12T07:24:42.556440Z	   39 Query	INSERT INTO orders (id, customer_id, order_date, amount, status)
+SELECT 6, 4, '2026-10-12', 950.00, 'new'
+WHERE NOT EXISTS (SELECT 1 FROM orders WHERE id = 6)
+2026-11-12T07:24:42.564634Z	   39 Query	SELECT id, name, city FROM customers ORDER BY id
+2026-11-12T07:24:42.565047Z	   39 Query	SELECT id, customer_id, amount, status FROM orders ORDER BY id
+2026-11-12T07:25:42.687113Z	   42 Query	USE sql_practice
+2026-11-12T07:25:42.687344Z	   42 Query	CREATE OR REPLACE VIEW moscow_customers AS
+SELECT id, name, email FROM customers
+WHERE city = CONVERT(0xD09CD0BED181D0BAD0B2D0B0 USING utf8mb4) COLLATE utf8mb4_unicode_ci
+2026-11-12T07:25:42.713584Z	   42 Query	CREATE OR REPLACE VIEW customer_summary AS
+SELECT c.id, c.name, c.city, COUNT(o.id) AS order_count,
+       COALESCE(SUM(o.amount), 0) AS total_amount
+FROM customers c LEFT JOIN orders o ON c.id=o.customer_id
+GROUP BY c.id, c.name, c.city
+2026-11-12T07:25:42.735401Z	   42 Query	SHOW FULL TABLES WHERE Table_type = 'VIEW'
+2026-11-12T07:25:42.738435Z	   42 Query	SHOW CREATE VIEW customer_summary
+2026-11-12T07:25:42.738765Z	   42 Query	CREATE OR REPLACE VIEW moscow_customers AS
+SELECT id, name, email, created_at FROM customers
+WHERE city = CONVERT(0xD09CD0BED181D0BAD0B2D0B0 USING utf8mb4) COLLATE utf8mb4_unicode_ci
+2026-11-12T07:25:42.753359Z	   42 Query	DROP VIEW moscow_customers
+2026-11-12T07:25:42.760790Z	   42 Query	CREATE VIEW active_customers AS
+SELECT id, name, email, city FROM customers WHERE city IS NOT NULL
+2026-11-12T07:25:42.771328Z	   42 Query	UPDATE active_customers SET city=CONVERT(0xD0A1D0BED187D0B8 USING utf8mb4) WHERE id=2
+2026-11-12T07:25:42.779488Z	   42 Query	INSERT INTO active_customers (name,email,city) VALUES
+(CONVERT(0xD09DD0BED0B2D18BD0B920D09AD0BBD0B8D0B5D0BDD182 USING utf8mb4),'new@example.com',CONVERT(0xD0A3D184D0B0 USING utf8mb4))
+2026-11-12T07:25:42.787652Z	   42 Query	SELECT id, email FROM customers WHERE email='new@example.com'
+2026-11-12T07:25:42.787947Z	   42 Query	DELETE FROM active_customers WHERE email='new@example.com'
+2026-11-12T07:25:42.795370Z	   42 Query	SELECT COUNT(*) AS remaining_customers FROM customers
+2026-11-12T07:25:42.795618Z	   42 Query	CREATE OR REPLACE VIEW customer_summary AS
+SELECT c.id, c.name, COUNT(o.id) AS order_count
+FROM customers c LEFT JOIN orders o ON c.id=o.customer_id
+GROUP BY c.id, c.name
+2026-11-12T07:26:11.567791Z	   43 Query	USE sql_practice
+2026-11-12T07:26:11.568139Z	   43 Query	CREATE OR REPLACE VIEW customer_summary AS
+SELECT c.id,c.name,COUNT(o.id) AS order_count FROM customers c
+LEFT JOIN orders o ON c.id=o.customer_id GROUP BY c.id,c.name
+2026-11-12T07:26:11.586654Z	   43 Query	UPDATE customer_summary SET name='X' WHERE id=1
+2026-11-12T07:26:11.728887Z	   44 Query	USE sql_practice
+2026-11-12T07:26:11.729113Z	   44 Query	CREATE OR REPLACE VIEW moscow_customers AS
+SELECT id,name,email,city FROM customers
+WHERE city=CONVERT(0xD09CD0BED181D0BAD0B2D0B0 USING utf8mb4) COLLATE utf8mb4_unicode_ci
+2026-11-12T07:26:11.755689Z	   44 Query	INSERT INTO moscow_customers (name,email,city) VALUES
+(CONVERT(0xD09FD191D182D18020D092D182D0BED180D0BED0B9 USING utf8mb4),'petr2@example.com',CONVERT(0xD09AD0B0D0B7D0B0D0BDD18C USING utf8mb4))
+2026-11-12T07:26:11.764409Z	   44 Query	SELECT id,email FROM moscow_customers
+2026-11-12T07:26:11.764829Z	   44 Query	CREATE OR REPLACE VIEW moscow_customers AS
+SELECT id,name,email,city FROM customers
+WHERE city=CONVERT(0xD09CD0BED181D0BAD0B2D0B0 USING utf8mb4) COLLATE utf8mb4_unicode_ci
+WITH CHECK OPTION
+2026-11-12T07:26:11.915804Z	   45 Query	USE sql_practice
+2026-11-12T07:26:11.915943Z	   45 Query	INSERT INTO moscow_customers (name,email,city) VALUES
+(CONVERT(0xD09FD191D182D18020D0A2D180D0B5D182D0B8D0B9 USING utf8mb4),'petr3@example.com',CONVERT(0xD09AD0B0D0B7D0B0D0BDD18C USING utf8mb4))
+2026-11-12T07:26:12.067693Z	   46 Query	USE sql_practice
+2026-11-12T07:26:12.068012Z	   46 Query	DELETE FROM customers WHERE email IN ('petr2@example.com','petr3@example.com')
+2026-11-12T07:26:12.088978Z	   46 Query	CREATE OR REPLACE VIEW public_customers AS SELECT id,name,city FROM customers
+2026-11-12T07:26:59.223253Z	   47 Query	USE sql_practice
+2026-11-12T07:26:59.223715Z	   47 Query	CREATE OR REPLACE VIEW customer_summary AS
+SELECT c.id,c.name,c.city,COUNT(o.id) AS order_count
+FROM customers c LEFT JOIN orders o ON c.id=o.customer_id
+GROUP BY c.id,c.name,c.city
+2026-11-12T07:26:59.250984Z	   47 Query	EXPLAIN SELECT * FROM customer_summary
+WHERE city=CONVERT(0xD09CD0BED181D0BAD0B2D0B0 USING utf8mb4) COLLATE utf8mb4_unicode_ci
+2026-11-12T07:27:35.003186Z	   52 Query	SELECT id, name, city FROM sql_practice.public_customers ORDER BY id
+2026-11-12T07:27:49.153859Z	   53 Query	SELECT id,customer_id,amount,status FROM sql_practice.orders ORDER BY id
+2026-11-12T07:27:49.155621Z	   53 Query	SHOW GRANTS FOR 'analyst'@'localhost'
+2026-11-12T07:28:24.469269Z	   54 Query	SELECT * FROM sql_practice.customers
+2026-11-12T07:34:25.705240Z	   59 Query	USE sql_practice
+2026-11-12T07:34:25.705415Z	   59 Query	CREATE OR REPLACE VIEW moscow_customers AS
+SELECT id,name,email,created_at FROM customers WHERE city='Москва'
+2026-11-12T07:34:25.717982Z	   59 Query	CREATE OR REPLACE VIEW customer_summary AS
+SELECT c.id,c.name,c.city,COUNT(o.id) AS order_count
+FROM customers c LEFT JOIN orders o ON c.id=o.customer_id
+GROUP BY c.id,c.name,c.city
+2026-11-12T07:34:25.728679Z	   59 Query	CREATE OR REPLACE VIEW active_customers AS
+SELECT id,name,email,city FROM customers WHERE city IS NOT NULL
+2026-11-12T07:34:25.738261Z	   59 Query	CREATE OR REPLACE VIEW moscow_customers AS
+SELECT id,name,email,city FROM customers WHERE city='Москва'
+WITH CHECK OPTION
+2026-11-12T07:34:25.748429Z	   59 Query	CREATE OR REPLACE VIEW public_customers AS
+SELECT id,name,city FROM customers
+2026-11-12T07:34:25.755049Z	   59 Query	EXPLAIN SELECT * FROM customer_summary WHERE city='Москва'
+2026-11-12T07:34:25.758181Z	   59 Query	SHOW FULL TABLES WHERE Table_type='VIEW'
